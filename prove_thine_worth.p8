@@ -17,39 +17,39 @@ function _init()
 	palt(0,false)
 	palt(11,true)
 	--entities
-	plr=mkplr(64,64)
+	player=make_player(64,64)
 end
 
 function _update()
-	updplr(plr)
+	update_player(player)
 end
 
 function _draw()
 	cls(9)
-	drwplr(plr)
+	draw_player(player)
 end
 
 -->8
 --player
-function mkplr(x,y)
-	local plr={
+function make_player(x,y)
+	local player={
 		x=x,y=y,
 		w=8,h=8,
 		dx=0,dy=0,
 		speed=1,
 		sprite=1
 	}
-	return plr
+	return player
 end
 
-function updplr(p)
+function update_player(p)
 	p.dx=0
 	if (btn(⬅️)) p.dx-=p.speed
 	if (btn(➡️)) p.dx+=p.speed
 	p.x+=p.dx
 end
 
-function drwplr(p)
+function draw_player(p)
 	spr(p.sprite,p.x,p.y,1,1)
 end
 
