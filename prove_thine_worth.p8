@@ -37,8 +37,12 @@ function make_player(x,y)
 		w=8,h=8,
 		dx=0,dy=0,
 		speed=1,
-		sprite=1
+		sprite=1,
+		flipx=false,
 	}
+	add_animation(player,"idle",{1})
+	add_animation(player,"walk",{3,1,2},12)
+	set_animation(player,"idle")
 	return player
 end
 
@@ -47,10 +51,70 @@ function update_player(p)
 	if (btn(⬅️)) p.dx-=p.speed
 	if (btn(➡️)) p.dx+=p.speed
 	p.x+=p.dx
+	animate_player(p)
 end
 
 function draw_player(p)
-	spr(p.sprite,p.x,p.y,1,1)
+	spr(p.sprite,p.x,p.y,1,1,p.flipx)
+end
+
+
+function animate_player(p)
+	if p.dx<0 then
+		p.flipx=true
+	elseif p.dx>0 then
+		p.flipx=false
+	end
+	
+	local anim="idle"
+	if p.dx!=0 then
+		anim="walk"
+	end
+	set_animation(p,anim)
+	update_animation(p)
+end
+
+function add_animation(obj,name,frames,speed)
+		local anim={
+			name=name,
+			frames=frames,
+			speed=speed or 0,
+			currf=1,
+			t=0
+		}
+		obj.anims=obj.anims or {}
+		obj.anims[name]=anim
+		set_animation(obj,name)
+end
+
+function set_animation(obj,name)
+	--reset current animation before change
+	--to not save last state, but only if it
+	--is a different animation
+	if obj.curranim!=nil and obj.curranim.name!=name then
+		reset_animation(obj)
+	end
+	obj.curranim=obj.anims[name]
+end
+
+function reset_animation(obj)
+	obj.curranim.currf=1
+	obj.curranim.t=0
+end
+
+function update_animation(obj)
+	local fps=30
+	local a=obj.curranim
+	if #a.frames>1 and a.speed>0 then
+		local frame=flr((a.t*a.speed/fps)%#a.frames)+1
+		if frame<a.currf then
+			a.t=0
+		else
+			a.t+=1
+		end
+		a.currf=frame
+	end
+	obj.sprite=a.frames[a.currf]
 end
 
 __gfx__
