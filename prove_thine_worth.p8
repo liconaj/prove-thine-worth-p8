@@ -39,10 +39,10 @@ function make_player(x,y)
 		speed=1,
 		sprite=1,
 		flipx=false,
+		idlet=0,
 	}
 	add_animation(player,"idle",{1})
 	add_animation(player,"walk",{3,1,2},12)
-	set_animation(player,"idle")
 	return player
 end
 
@@ -66,17 +66,40 @@ function animate_player(p)
 		p.flipx=false
 	end
 	
-	local anim="idle"
+	local anim
 	if p.dx!=0 then
 		anim="walk"
+	else
+		anim="idle"
+	end
+	
+	--update idle animation
+	local maxstatict=25
+	if anim=="idle" then
+		if p.idlet<maxstatict then
+			p.idlet+=1
+			if p.idlet==maxstatict then
+				if rnd()<0.5 then
+					add_animation(p,"idle",{4,5,6,7,8,7,6,5},9)
+				else
+					add_animation(p,"idle",{17,18,19,20,21,20,19,18},9)
+				end
+			end
+		end
+	else
+		if p.idlet==maxstatict then
+			add_animation(p,"idle",{1})
+		end
+		p.idlet=0
 	end
 	set_animation(p,anim)
 	update_animation(p)
 end
 
+--animation
+-------------------------------
 function add_animation(obj,name,frames,speed)
 		local anim={
-			name=name,
 			frames=frames,
 			speed=speed or 0,
 			currf=1,
@@ -84,27 +107,30 @@ function add_animation(obj,name,frames,speed)
 		}
 		obj.anims=obj.anims or {}
 		obj.anims[name]=anim
-		set_animation(obj,name)
+		if obj.curranim==nil then
+			set_animation(obj,name)
+		end
 end
 
-function set_animation(obj,name)
+function set_animation(obj,anim)
 	--reset current animation before change
 	--to not save last state, but only if it
 	--is a different animation
-	if obj.curranim!=nil and obj.curranim.name!=name then
+	if obj.curranim!=nil and obj.curranim!=anim then
 		reset_animation(obj)
 	end
-	obj.curranim=obj.anims[name]
+	obj.curranim=anim
 end
 
 function reset_animation(obj)
-	obj.curranim.currf=1
-	obj.curranim.t=0
+	local anim=obj.anims[obj.curranim]
+	anim.currf=1
+	anim.t=0
 end
 
 function update_animation(obj)
 	local fps=30
-	local a=obj.curranim
+	local a=obj.anims[obj.curranim]
 	if #a.frames>1 and a.speed>0 then
 		local frame=flr((a.t*a.speed/fps)%#a.frames)+1
 		if frame<a.currf then
