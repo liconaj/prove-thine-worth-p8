@@ -80,9 +80,9 @@ function animate_player(p)
 			p.idlet+=1
 			if p.idlet==maxstatict then
 				if rnd()<0.5 then
-					add_animation(p,"idle",{4,5,6,7,8,7,6,5},9)
+					add_animation(p,"idle",{4,5,6,7,8,8,7,6,5,4},12)
 				else
-					add_animation(p,"idle",{17,18,19,20,21,20,19,18},9)
+					add_animation(p,"idle",{17,18,19,20,21,21,20,19,18,17},12)
 				end
 			end
 		end
