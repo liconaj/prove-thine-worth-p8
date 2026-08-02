@@ -17,7 +17,7 @@ function _init()
 	palt(0,false)
 	palt(11,true)
 	--entities
-	player=make_player({},64,30)
+	player=make_player({},64,72)
 end
 
 function _update()
@@ -37,7 +37,7 @@ function make_player(self,x,y)
 	make_entity(self,x,y)
 	
 	self.speed=1
-	self.weight=0.2
+	self.weight=0
 	
 	self.idle_timer=0
 	
@@ -60,17 +60,17 @@ function draw_player(self)
 	draw_entity(self)
 end
 
-function update_player_animation(self)	
-	local anim
+function update_player_animation(self)
+	local animation
 	if self.vel_x!=0 then
-		anim="walk"
+		animation="walk"
 	else
-		anim="idle"
+		animation="idle"
 	end
 	
 	--update idle animation
 	local max_static_idle_time=25
-	if anim=="idle" then
+	if animation=="idle" then
 		if self.idle_timer<max_static_idle_time then
 			self.idle_timer+=1
 			if self.idle_timer==max_static_idle_time then
@@ -87,7 +87,7 @@ function update_player_animation(self)
 		end
 		self.idle_timer=0
 	end
-	set_animation(self,anim)
+	set_animation(self,animation)
 end
 
 --entity
@@ -133,7 +133,7 @@ function make_sprite(self,x,y,n)
 end
 
 function update_sprite(self)
-	if self.anims!=nil then
+	if self.animations!=nil then
 		update_animation(self)
 	end
 end
@@ -145,48 +145,49 @@ end
 --animation
 -------------------------------
 function add_animation(sprite,name,frames,speed)
-		local anim={
+		local animation={
 			frames=frames,
 			speed=speed or 0,
-			currf=1,
+			current_frame=1,
 			t=0
 		}
-		sprite.anims=sprite.anims or {}
-		sprite.anims[name]=anim
-		if sprite.curranim==nil then
+		sprite.animations=sprite.animations or {}
+		sprite.animations[name]=animation
+		if sprite.current_animation==nil then
 			set_animation(sprite,name)
 		end
 end
 
-function set_animation(sprite,anim)
+function set_animation(sprite,name)
 	--reset current animation before change
 	--to not save last state, but only if it
 	--is a different animation
-	if sprite.curranim!=nil and sprite.curranim!=anim then
+	if sprite.current_animation!=nil
+	and sprite.current_animation!=name then
 		reset_animation(sprite)
 	end
-	sprite.curranim=anim
+	sprite.current_animation=name
 end
 
 function reset_animation(sprite)
-	local anim=sprite.anims[sprite.curranim]
-	anim.currf=1
-	anim.t=0
+	local a=sprite.animations[sprite.current_animation]
+	a.current_frame=1
+	a.t=0
 end
 
 function update_animation(sprite)
 	local fps=30
-	local a=sprite.anims[sprite.curranim]
+	local a=sprite.animations[sprite.current_animation]
 	if #a.frames>1 and a.speed>0 then
 		local frame=flr((a.t*a.speed/fps)%#a.frames)+1
-		if frame<a.currf then
+		if frame<a.current_frame then
 			a.t=0
 		else
 			a.t+=1
 		end
-		a.currf=frame
+		a.current_frame=frame
 	end
-	sprite.n=a.frames[a.currf]
+	sprite.n=a.frames[a.current_frame]
 end
 
 __gfx__
