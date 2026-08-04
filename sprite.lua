@@ -2,8 +2,8 @@ function make_sprite(self,x,y,n)
 	self=self or {}
 	self.x=x
 	self.y=y
-	self.w=8
-	self.h=8
+	self.w=1
+	self.h=1
 	self.n=n
 	self.flip_x=false
 	self.flip_y=false
@@ -17,23 +17,23 @@ function update_sprite(self)
 end
 
 function draw_sprite(self)
-	spr(self.n,self.x,self.y,1,1,self.flip_x,self.flip_y)
+	spr(self.n,self.x,self.y,self.w,self.h,self.flip_x,self.flip_y)
 end
 
 --animation
 -------------------------------
 function add_animation(sprite,name,frames,speed)
-		local animation={
-			frames=frames,
-			speed=speed or 0,
-			current_frame=1,
-			t=0
-		}
-		sprite.animations=sprite.animations or {}
-		sprite.animations[name]=animation
-		if sprite.current_animation==nil then
-			set_animation(sprite,name)
-		end
+	local animation={
+		frames=frames,
+		speed=speed or 0,
+		current_frame=1,
+		t=0
+	}
+	sprite.animations=sprite.animations or {}
+	sprite.animations[name]=animation
+	if sprite.current_animation==nil then
+		set_animation(sprite,name)
+	end
 end
 
 function set_animation(sprite,name)
