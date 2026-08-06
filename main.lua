@@ -4,7 +4,7 @@ function _init()
 	palt(0,false)
 	palt(11,true)
 	--entities
-	player=make_player({},64,72)
+	player=make_player({},64,16)
 end
 
 function _update()

@@ -2,11 +2,12 @@ function make_player(self,x,y)
 	make_entity(self,x,y)
 	
 	self.speed=1
-	self.weight=0
+	self.weight=0.2
 	
 	self.idle_timer=0
 	
 	add_animation(self,"idle",{1})
+	add_animation(self,"jump",{2})
 	add_animation(self,"walk",{2,3,1},12)
 	
 	return self
@@ -26,16 +27,14 @@ function draw_player(self)
 end
 
 function update_player_animation(self)
-	local animation
-	if self.vel_x!=0 then
-		animation="walk"
+	if self.grounded==true then
+		set_animation(self,self.vel_x!=0 and "walk" or "idle")
 	else
-		animation="idle"
+		set_animation(self,"jump")
 	end
 	
-	--update idle animation
 	local max_static_idle_time=25
-	if animation=="idle" then
+	if self.current_animation=="idle" then
 		if self.idle_timer<max_static_idle_time then
 			self.idle_timer+=1
 			if self.idle_timer==max_static_idle_time then
@@ -52,5 +51,4 @@ function update_player_animation(self)
 		end
 		self.idle_timer=0
 	end
-	set_animation(self,animation)
 end

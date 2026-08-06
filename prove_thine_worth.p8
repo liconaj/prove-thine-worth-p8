@@ -12,8 +12,11 @@ __lua__
 --by liconaj
 
 #include player.lua
+
 #include entity.lua
+
 #include sprite.lua
+
 #include main.lua
 
 
