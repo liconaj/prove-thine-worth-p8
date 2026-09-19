@@ -5,6 +5,8 @@ function _init()
 	palt(11,true)
 	--entities
 	player=make_player({},64,16)
+	level = {tx=0,ty=0,sx=0,sy=0,tw=16,th=16,
+}
 end
 
 function _update()
@@ -13,6 +15,6 @@ end
 
 function _draw()
 	cls(9)
-	map(0,0,0,0,16,16)
+	draw_map(level)
 	draw_player(player)
 end

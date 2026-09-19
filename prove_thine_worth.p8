@@ -11,6 +11,8 @@ __lua__
 --
 --by liconaj
 
+#include map.lua
+
 #include player.lua
 
 #include entity.lua
